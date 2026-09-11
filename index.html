@@ -190,20 +190,6 @@
   .mclose:hover{color:var(--accent)}
   @media (max-width:760px){.mbox{grid-template-columns:1fr;max-height:92vh;overflow:auto}}
 
-  /* admin */
-  .manage{display:inline-block;margin-top:12px;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:lowercase;color:var(--ink-3)}
-  .manage:hover{color:var(--accent)}
-  .admin{display:none;margin-top:12px;border:1px solid rgba(52,183,221,.35);padding:16px;background:#000}
-  .admin.show{display:block}
-  .admin h3{margin:0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:lowercase;display:flex;justify-content:space-between;font-weight:400}
-  .admin p{font-size:12px;color:var(--ink-2);margin-top:8px}
-  .admin textarea{width:100%;min-height:140px;margin-top:10px;background:transparent;border:1px solid var(--line);padding:10px;font-family:var(--mono);font-size:12px;color:var(--ink);resize:vertical}
-  .admin textarea:focus{outline:none;border-color:var(--accent)}
-  .admin .rowb{display:flex;gap:12px;margin-top:10px;align-items:center;flex-wrap:wrap}
-  .admin .save{border:1px solid var(--accent);color:var(--accent);padding:10px 16px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:lowercase}
-  .admin .save:hover{background:var(--accent);color:var(--bg)}
-  .admin .save:disabled{opacity:.5}
-  .admin .msg{font-family:var(--mono);font-size:11px;color:var(--ink-2)}
 
   footer{border-top:1px solid var(--line);padding:22px 0 0;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:lowercase;color:var(--ink-3)}
   footer nav{display:flex;gap:18px}footer nav a:hover{color:var(--accent)}
@@ -225,8 +211,6 @@
 </style>
 </head>
 <body>
-
-<script id="wl" type="application/json">{"addresses":[]}</script>
 
 <div class="intro" id="intro" aria-live="polite">
   <div class="ld"><div class="row"><span>SLYMZ // ID scan</span><span class="pct" id="ipct">0%</span></div><div class="bar"><i id="ibar"></i></div><div class="log" id="ilog"></div></div>
@@ -268,12 +252,6 @@
     <form id="wlform"><input id="addr" type="text" autocomplete="off" spellcheck="false" placeholder="0x… wallet address" aria-label="Wallet address"><button type="submit">Verify →</button><a class="req" href="https://discord.gg/slymz" target="_blank" rel="noopener">Request spot ↗</a></form>
     <div class="result" id="res" role="status" aria-live="polite"></div>
   </div>
-  <a class="manage" href="#" id="manage">// Manage whitelist</a>
-  <div class="admin" id="admin">
-    <h3>Whitelist <span class="msg" id="acount"></span></h3>
-    <p>One address per line. Saving publishes a new version of this page, so every visitor gets the updated list.</p>
-    <textarea id="alist" spellcheck="false" placeholder="0xabc…&#10;0xdef…"></textarea>
-    <div class="rowb"><button class="save" id="save">Save & publish</button><span class="msg" id="amsg"></span></div>
   </div>
   </div>
 
@@ -391,45 +369,32 @@
   modal.addEventListener('click', e => { if(e.target.closest('[data-close]') || e.target === modal) closeCard(); });
   addEventListener('keydown', e => { if(e.key === 'Escape' && modal.classList.contains('show')) closeCard(); });
 
-  /* ---------- whitelist ---------- */
-  const WL = JSON.parse(document.getElementById('wl').textContent || '{"addresses":[]}');
-  const list = new Set((WL.addresses||[]).map(a => a.trim().toLowerCase()).filter(Boolean));
-  /* when hosted as static files (e.g. GitHub Pages) the list also comes from whitelist.json next to index.html */
-  fetch('whitelist.json', {cache:'no-store'}).then(r => r.ok ? r.json() : null).then(j => { if(j && Array.isArray(j.addresses)){ j.addresses.forEach(a => list.add(String(a).trim().toLowerCase())); } }).catch(()=>{});
-  if(!(window.claude && window.claude.use)) document.getElementById('manage').hidden = true;
+  /* ---------- whitelist: google sheet with two tabs, "gtd" and "fcfs" — any cell that looks like a wallet counts ---------- */
+  const SHEET_ID = '1aFNIcMI_nntBEwNVVWmZgdhFFYO61uPLv5BZz2YJ6mY';
+  const list = new Map(); // address -> 'gtd' | 'fcfs'
+  let sheetReady = false, sheetError = false;
+  function ingestCsv(text, tier){
+    (text.match(/0x[a-fA-F0-9]{40}/g) || []).forEach(a => { a = a.toLowerCase(); if(!(tier === 'fcfs' && list.get(a) === 'gtd')) list.set(a, tier); });
+  }
+  function loadTab(tab){
+    return fetch('https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/gviz/tq?tqx=out:csv&headers=0&sheet=' + tab + '&_=' + Date.now(), {cache:'no-store'})
+      .then(r => r.ok ? r.text() : Promise.reject(r.status)).then(t => ingestCsv(t, tab));
+  }
+  function loadSheet(){ return Promise.all([loadTab('gtd'), loadTab('fcfs')]).then(() => { sheetReady = true; sheetError = false; }).catch(() => { sheetError = true; }); }
+  const sheetLoad = loadSheet();
   const res = document.getElementById('res');
-  document.getElementById('wlform').addEventListener('submit', e => {
+  document.getElementById('wlform').addEventListener('submit', async e => {
     e.preventDefault();
     const a = document.getElementById('addr').value.trim().toLowerCase();
     res.className = 'result show';
-    if(!/^0x[a-f0-9]{40}$/.test(a)){ res.classList.add('warn'); res.textContent = '// Invalid address — expected 0x + 40 hex characters'; return; }
-    if(list.has(a)){ res.classList.add('ok'); res.textContent = '// Access granted · GTD Phase 01'; }
-    else { res.classList.add('no'); res.innerHTML = '// Not on the list — <a href="https://discord.gg/slymz" target="_blank" rel="noopener">request a spot on discord ↗</a>'; }
-  });
-  const admin = document.getElementById('admin'), alist = document.getElementById('alist'), amsg = document.getElementById('amsg'), save = document.getElementById('save');
-  alist.value = [...list].join('\n'); document.getElementById('acount').textContent = list.size + ' addresses';
-  document.getElementById('manage').addEventListener('click', e => { e.preventDefault(); admin.classList.toggle('show'); if(admin.classList.contains('show')) alist.focus(); });
-  save.addEventListener('click', async () => {
-    const addrs = [...new Set(alist.value.split(/[\s,;]+/).map(s => s.trim().toLowerCase()).filter(Boolean))];
-    const bad = addrs.filter(a => !/^0x[a-f0-9]{40}$/.test(a));
-    if(bad.length){ amsg.textContent = 'Invalid: ' + bad[0]; return; }
-    const artifact = window.claude && window.claude.use ? await window.claude.use('artifact') : null;
-    if(!artifact){ amsg.textContent = 'Saving is unavailable in this view.'; return; }
-    save.disabled = true; amsg.textContent = 'Publishing…';
-    try{
-      const src = await (await fetch(location.href, {cache:'no-store'})).text();
-      const json = JSON.stringify({addresses: addrs});
-      const next = src.replace(/(<script id="wl" type="application\/json">)[\s\S]*?(<\/script>)/, (m,a,b) => a + json + b);
-      if(next === src) throw {code:'invalid_content', message:'whitelist block not found'};
-      await artifact.publish(next);
-      amsg.textContent = 'Published — reloading…';
-    }catch(err){
-      const code = err && err.code;
-      if(code === 'not_writer' || code === 'not_granted'){ amsg.textContent = 'This view is read-only — only the owner can update the list.'; admin.classList.remove('show'); }
-      else if(code === 'conflict'){ amsg.textContent = 'A newer version was just published — reloading.'; }
-      else amsg.textContent = 'Could not publish: ' + (err && err.message || code || 'unknown error');
-      save.disabled = false;
-    }
+    if(!/^0x[a-f0-9]{40}$/.test(a)){ res.classList.add('warn'); res.textContent = '// invalid address — expected 0x + 40 hex characters'; return; }
+    res.classList.add('warn'); res.textContent = '// checking the list…';
+    if(!sheetReady && !sheetError) await sheetLoad; else if(sheetError) await loadSheet();
+    res.className = 'result show';
+    const tier = list.get(a);
+    if(tier === 'gtd'){ res.classList.add('ok'); res.textContent = '// gtd slot secured — you are guaranteed a mint in phase 01'; }
+    else if(tier === 'fcfs'){ res.classList.add('fcfs'); res.textContent = '// fcfs slot — first come, first served in phase 02. be early.'; }
+    else { res.classList.add('no'); res.innerHTML = '// not on the list — <a href="https://discord.gg/slymz" target="_blank" rel="noopener">request a spot on discord ↗</a>' + (sheetError ? ' <span class="dim">(list could not be loaded — try again)</span>' : ''); }
   });
 })();
 </script>
