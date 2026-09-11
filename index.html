@@ -76,30 +76,49 @@
   @media (prefers-reduced-motion:reduce){.logo::before,.logo::after,.logo img,.fx .noise{animation:none!important}}
 
   /* ---------- action bar: wallet checker + socials ---------- */
-  .bar{position:relative;z-index:2;background:rgba(4,24,28,.38);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(248,247,244,.16);display:grid;grid-template-columns:auto 1fr;align-items:center;gap:clamp(12px,3vw,32px);padding:14px clamp(14px,2.4vw,26px)}
-  .bar .lbl{font-size:13px;line-height:1.3}
-  .bar .lbl b{display:block;color:var(--accent);font-family:var(--head);font-weight:600;font-size:15px;letter-spacing:.02em}
-  .bar .lbl small{color:var(--ink-2);font-size:13px}
-  .bar form{display:grid;grid-template-columns:1fr auto auto;align-items:center;border-bottom:1px solid var(--ink-3)}
-  .bar form .req{color:var(--ink-2);border-left:1px solid var(--line);margin-left:6px;font-family:var(--mono);font-size:11px;letter-spacing:.16em;padding:8px 10px;white-space:nowrap}
-  .bar form .req:hover{color:var(--accent)}
-  @media (max-width:520px){.bar form{grid-template-columns:1fr auto}.bar form .req{grid-column:1/-1;border-left:0;margin:0;padding:8px 0;text-align:left}}
-  .bar input{background:transparent;border:0;padding:10px 4px;font-family:var(--mono);font-size:12.5px;color:var(--ink);min-width:0;letter-spacing:.04em}
-  .bar input::placeholder{color:var(--ink-3)}
-  .bar input:focus{outline:none}
-  .bar form:focus-within{border-color:var(--accent)}
-  .bar form button{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:lowercase;color:var(--accent);padding:8px 10px}
-  .bar form button:hover{color:#fff}
   .socials{display:flex;gap:clamp(16px,2.6vw,30px)}
   .socials a{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:lowercase;color:var(--ink-2);transition:color .2s;position:relative}
   .socials a::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s}
   .socials a:hover::after{transform:scaleX(1)}
   .socials a:hover{color:var(--accent)}
-  .result{grid-column:1/-1;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:lowercase;display:none;padding:10px 12px;border:1px solid}
+
+  /* ---------- terminal about ---------- */
+  .term-line{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--ink-2);margin-bottom:8px}
+  .prompt{color:var(--ink);font-weight:700}
+  .prompt::after{content:"";}
+  .typed{position:relative}
+  .typed b{color:var(--accent);font-weight:600}
+  .typed .cur{display:inline-block;width:.55em;height:1em;background:var(--accent);vertical-align:-.15em;margin-left:2px;animation:blink 1s steps(2) infinite}
+  @keyframes blink{50%{opacity:0}}
+
+  /* ---------- status-style terminal checker ---------- */
+  .term{border:1px solid rgba(248,247,244,.16);background:rgba(4,24,28,.42);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);font-family:var(--mono)}
+  .term-head{display:flex;align-items:center;gap:14px;padding:7px 12px;border-bottom:1px solid rgba(248,247,244,.12);font-size:11px;letter-spacing:.16em;color:var(--ink-2)}
+  .term-head .dots{display:flex;gap:6px}
+  .term-head .dots i{width:9px;height:9px;border-radius:50%;background:rgba(248,247,244,.18)}
+  .term-head .dots i:first-child{background:rgba(255,82,82,.7)}
+  .term-head .term-node{margin-left:auto;color:var(--ink-3)}
+  .term-pane{padding:14px clamp(16px,4vw,40px) 16px;text-align:center}
+  .term-pane h2{font-family:var(--mono);font-size:clamp(14px,1.7vw,18px);font-weight:700;margin-top:4px}
+  .term-pane h2 span{color:var(--accent)}
+  .term-pane>p{color:var(--ink-2);font-size:12px;max-width:52ch;margin:6px auto 0;line-height:1.5}
+  #wlform{display:grid;grid-template-columns:1fr auto;width:min(460px,100%);margin:0 auto;border:1px solid var(--accent);box-shadow:0 0 18px rgba(52,183,221,.25)}
+  #wlform input{background:rgba(4,24,28,.6);border:0;padding:9px 12px;font-family:var(--mono);font-size:12px;color:var(--ink);min-width:0;letter-spacing:.04em}
+  #wlform input::placeholder{color:var(--ink-3)}
+  #wlform input:focus{outline:none}
+  #wlform button{font-family:var(--mono);font-size:10.5px;letter-spacing:.18em;padding:0 18px;border-left:1px solid var(--accent);color:var(--accent);transition:background .2s,color .2s}
+  #wlform button:hover{background:var(--accent);color:var(--bg)}
+  .hint-line{margin-top:7px;font-size:10px;letter-spacing:.16em;color:var(--ink-3)}
+  .hint-line a{color:var(--ink-2);text-decoration:underline}
+  .hint-line a:hover{color:var(--accent)}
+  .result{margin:10px auto 0;width:min(460px,100%);font-size:11px;letter-spacing:.14em;display:none;padding:12px 16px;border:1px solid}
   .result.show{display:block}
-  .result.ok{color:var(--ok);border-color:var(--ok)}.result.no{color:var(--danger);border-color:var(--danger)}
-  .result a{text-decoration:underline;color:var(--accent)}.result.warn{color:var(--ink-2);border-color:var(--line)}
-  @media (max-width:820px){.bar{grid-template-columns:1fr}.hero .top{flex-direction:column;gap:14px;align-items:flex-start}}
+  .result.ok{color:var(--ok);border-color:var(--ok)}
+  .result.no{color:var(--danger);border-color:var(--danger)}
+  .result.fcfs{color:#E8C86A;border-color:#E8C86A}
+  .result.warn{color:var(--ink-2);border-color:rgba(248,247,244,.16)}
+  .result a{text-decoration:underline;color:var(--accent)}
+  .result .dim{color:var(--ink-3)}
 
   /* ---------- HUD frame on slides ---------- */
   .slide{background:transparent;border:0!important;overflow:hidden}
@@ -225,12 +244,13 @@
   <div class="vbg" aria-hidden="true"></div>
   <div class="fade" aria-hidden="true"></div>
   <div class="top"><span><b>//</b> Sector [redacted]</span>
-  <div class="socials">
+  <div class="topr"><div class="socials">
       <a href="https://opensea.io/collection/slymz" target="_blank" rel="noopener">OpenSea</a>
       <a href="https://x.com/slymz" target="_blank" rel="noopener">X</a>
       <a href="https://discord.gg/slymz" target="_blank" rel="noopener">Discord</a>
       <a href="https://shop.slymz.xyz" target="_blank" rel="noopener">Shop</a>
     </div>
+  </div>
   </div>
   <div class="logo"><img src="assets/logo.webp" alt="SLYMZ" draggable="false"></div>
 </section>
@@ -238,8 +258,8 @@
 <main class="wrap">
   <section class="about" id="about">
     <div class="ab-text">
-      <span class="kicker">// About</span>
-      <p>SLYMZ is a crew of 1,111 slimes running the undercity of Sector [redacted]. Every mint is a crew ID — one colour from hair to core, one rank, one clearance. Two mint phases, wallet-capped, no first-come-first-served, no delayed reveal.</p>
+      <div class="term-line"><span class="prompt">root@slymz:~$</span> ./whoami</div>
+      <p class="typed" id="typed" data-segments='[["slymz is a crew of ",0],["1,111 slimes",1],[" running the undercity of sector [redacted]. every mint is a ",0],["crew id",1],[" — one colour from hair to core, one rank, one clearance. two mint phases, ",0],["wallet-capped",1],[", no first-come-first-served, no delayed reveal.",0]]'>slymz is a crew of <b>1,111 slimes</b> running the undercity of sector [redacted]. every mint is a <b>crew id</b> — one colour from hair to core, one rank, one clearance. two mint phases, <b>wallet-capped</b>, no first-come-first-served, no delayed reveal.</p>
     </div>
     <dl class="ab-stats">
       <div><dt>Supply</dt><dd>1,111</dd></div>
@@ -249,14 +269,15 @@
     </dl>
   </section>
 
-  <div class="clear">
-  <div class="bar" id="clearance">
-    <div class="lbl"><b>Check your clearance</b><small>Paste a wallet to see if it's on the GTD list.</small></div>
-    <form id="wlform"><input id="addr" type="text" autocomplete="off" spellcheck="false" placeholder="0x… wallet address" aria-label="Wallet address"><button type="submit">Verify →</button><a class="req" href="https://discord.gg/slymz" target="_blank" rel="noopener">Request spot ↗</a></form>
-    <div class="result" id="res" role="status" aria-live="polite"></div>
-  </div>
-  </div>
-  </div>
+  <section class="term" id="clearance">
+    <div class="term-head"><span class="dots"><i></i><i></i><i></i></span><span class="term-title">registry // clearance_check</span><span class="term-node">node-07 · read only</span></div>
+    <div class="term-pane" id="pane-check">
+      <div class="term-line"><span class="prompt">root@slymz:~$</span> ./check --wallet</div>
+      <form id="wlform"><input id="addr" type="text" autocomplete="off" spellcheck="false" placeholder="0x… wallet address" aria-label="Wallet address"><button type="submit">check</button></form>
+      <div class="hint-line">press enter to query · <a href="https://discord.gg/slymz" target="_blank" rel="noopener">request a spot on discord ↗</a></div>
+      <div class="result" id="res" role="status" aria-live="polite"></div>
+    </div>
+  </section>
 
   <section class="show" id="collection">
     <div class="head"><h2>The <span>crew</span></h2><span class="cnt" id="cnt">01 / 06</span></div>
@@ -371,6 +392,27 @@
   function closeCard(){ modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); document.body.classList.remove('lock'); openEl = null; }
   modal.addEventListener('click', e => { if(e.target.closest('[data-close]') || e.target === modal) closeCard(); });
   addEventListener('keydown', e => { if(e.key === 'Escape' && modal.classList.contains('show')) closeCard(); });
+
+  /* ---------- terminal about: typewriter ---------- */
+  (function(){
+    const el = document.getElementById('typed'); if(!el || reduce) return;
+    const segs = JSON.parse(el.dataset.segments); const html = el.innerHTML;
+    let started = false;
+    function run(){
+      if(started) return; started = true; el.innerHTML = '';
+      const cur = document.createElement('span'); cur.className = 'cur';
+      let si = 0, ci = 0, node = null;
+      (function tick(){
+        if(si >= segs.length){ el.innerHTML = html; el.appendChild(cur); return; }
+        const [text, hl] = segs[si];
+        if(ci === 0){ node = hl ? document.createElement('b') : document.createTextNode(''); el.appendChild(node); el.appendChild(cur); }
+        ci++; if(hl) node.textContent = text.slice(0,ci); else node.textContent = text.slice(0,ci);
+        if(ci >= text.length){ si++; ci = 0; }
+        setTimeout(tick, text[ci-1] === ' ' ? 24 : 18 + Math.random()*22);
+      })();
+    }
+    if('IntersectionObserver' in window){ const io = new IntersectionObserver(es => { if(es.some(e => e.isIntersecting)){ run(); io.disconnect(); } }, {threshold:.4}); io.observe(el); } else run();
+  })();
 
   /* ---------- whitelist: google sheet with two tabs, "gtd" and "fcfs" — any cell that looks like a wallet counts ---------- */
   const SHEET_ID = '1aFNIcMI_nntBEwNVVWmZgdhFFYO61uPLv5BZz2YJ6mY';
