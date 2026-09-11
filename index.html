@@ -35,16 +35,16 @@
   button{background:none;border:0}
   .wrap{width:min(1120px,100%);margin-inline:auto;padding-inline:clamp(16px,4vw,40px)}
   :root{--gap:clamp(28px,4vw,48px)}
-  main{position:relative;z-index:3;display:grid;grid-template-columns:minmax(0,1fr);gap:var(--gap);padding-bottom:var(--gap);margin-top:calc(var(--gap) * -.4)}
+  main{position:relative;z-index:3;display:grid;grid-template-columns:minmax(0,1fr);gap:var(--gap);padding-bottom:var(--gap);margin-top:clamp(-380px,-38vh,-260px)}
   main>*{min-width:0}
 
   /* ---------- HERO with video background ---------- */
-  .hero{position:relative;height:min(78vh,680px);min-height:440px;overflow:hidden;display:grid;place-items:center;background:var(--bg-2)}
-  .hero video{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 1.4s ease;filter:saturate(.75) contrast(1.05)}
+  .hero{position:relative;height:min(120vh,1120px);min-height:640px;overflow:hidden;display:grid;place-items:center;align-content:start;padding-top:clamp(80px,16vh,190px);background:var(--bg-2)}
+  .hero video{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover;object-position:50% 0%;opacity:0;transition:opacity 1.4s ease;filter:saturate(.75) contrast(1.05)}
   .hero video.on{opacity:.5}
-  .hero video{mask-image:linear-gradient(to bottom,#000 0%,#000 45%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 45%,transparent 100%)}
+  .hero video{mask-image:linear-gradient(to bottom,#000 0%,#000 62%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 62%,transparent 100%)}
   .vfade{position:absolute;inset:0;z-index:1;pointer-events:none;background:
-    linear-gradient(to bottom,var(--bg-2) 0%,transparent 20%,transparent 50%,var(--bg-2) 100%),
+    linear-gradient(to bottom,var(--bg-2) 0%,transparent 16%,transparent 58%,var(--bg-2) 100%),
     linear-gradient(to right,var(--bg-2) 0%,transparent 18%,transparent 82%,var(--bg-2) 100%),
     radial-gradient(70% 60% at 50% 50%,transparent 30%,rgba(4,24,28,.55) 100%),
     linear-gradient(rgba(45,115,136,.28),rgba(45,115,136,.28))}
@@ -60,7 +60,7 @@
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
   @keyframes noise{0%{transform:translate(0,0)}25%{transform:translate(-4%,3%)}50%{transform:translate(3%,-2%)}75%{transform:translate(-2%,-4%)}100%{transform:translate(4%,2%)}}
   .fx .scanl{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,rgba(0,0,0,.12) 0 2px,transparent 2px 6px)}
-  .hero .fade{position:absolute;left:0;right:0;bottom:0;height:40%;z-index:1;background:linear-gradient(to bottom,transparent,var(--bg-2))}
+  .hero .fade{position:absolute;left:0;right:0;bottom:0;height:30%;z-index:1;background:linear-gradient(to bottom,transparent,var(--bg-2))}
   .hero .top{position:absolute;top:0;left:0;right:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:18px clamp(16px,4vw,40px);font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:lowercase;color:var(--ink-2)}
   .hero .top b{color:var(--accent);font-weight:400}
 
